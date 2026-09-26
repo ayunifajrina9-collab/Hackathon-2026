@@ -1,3 +1,6 @@
+from typing import Iterable, List
+
+
 class Clinics:
     def __init__(self, clinic_id: int, clinic_name: str):
         self.__clinic_id: int = clinic_id
@@ -26,15 +29,23 @@ class Clinics:
         if not isinstance(other, Clinics):
             return False
         return other.clinic_id == self.clinic_id
+
+
 class WaitingRoom:
     def __init__(self, waiting_time: int, number_of_people: int, status: str):
         self.__waiting_time: int = waiting_time
         self.__number_of_people: int = number_of_people
         self.__status: str = status
+        self.__current_queue: int = 0
+        self.__queue: List['Patient'] = list()
 
     @property
     def waiting_time(self) -> int:
         return self.__waiting_time
+
+    @property
+    def current_queue(self) -> int:
+        return self.__current_queue
 
     @property
     def number_of_people(self) -> int:
@@ -44,6 +55,17 @@ class WaitingRoom:
     def status(self) -> str:
         return self.__status
 
+    @property
+    def queue(self):
+        return iter(self.__queue)
+
+    def assign_patient(self, patient: 'Patient'):
+        self.__current_queue += 1
+
+        patient.get_queue_number(self.__current_queue)
+
+        self.__queue.append(patient)
+
     def __repr__(self) -> str:
         return (
             f'<WaitingRoom '
@@ -51,8 +73,6 @@ class WaitingRoom:
             f'number_of_people={self.__number_of_people} '
             f'status={self.__status}>'
         )
-
-
 # Example / testing
 if __name__ == "__main__":
     waiting_room1 = WaitingRoom(20, 5, "Occupied")
