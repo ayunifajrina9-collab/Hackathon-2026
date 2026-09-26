@@ -23,6 +23,12 @@ class MemoryRepository:
     def get_doctors(self):
         return self.__doctors
 
+    def get_doctor(self, doctor_id):
+        for doctor in self.__doctors:
+            if doctor.doctor_id == doctor_id:
+                return doctor
+        return None
+
 
 def read_csv_file(filename):
     with open(filename, encoding='utf-8-sig') as infile:
@@ -79,12 +85,24 @@ def populate(base_path, repo):
 if __name__ == "__main__":
     repo = MemoryRepository()
     base_path = Path(__file__).parent / "doctorclinic_data"
+
     populate(base_path, repo)
 
     print("=== Clinics loaded ===")
     for clinic in repo.get_clinics():
         print(clinic)
+        print("Waiting room:", clinic.waiting_room)
 
     print("\n=== Doctors loaded ===")
     for doctor in repo.get_doctors():
         print(doctor)
+        print("Clinic ID:", doctor.clinic_id)
+        print("Waiting room:", doctor.waiting_room)
+
+    for doctor in repo.get_doctors():
+        clinic = repo.get_clinic(doctor.clinic_id)
+
+        print(
+            doctor.doctor_name,
+            doctor.waiting_room is clinic.waiting_room
+        )

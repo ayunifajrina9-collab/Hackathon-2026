@@ -37,6 +37,7 @@ class WaitingRoom:
         self.__status: str = status
         self.__current_queue: int = 0
         self.__queue: List['Patient'] = list()
+        self.__next_queue_number: int =1
 
     @property
     def waiting_time(self) -> int:
@@ -54,6 +55,9 @@ class WaitingRoom:
     def current_queue(self) -> int:
         return self.__current_queue
 
+    def set_current_queue(self, queue_number: int):
+        self.__current_queue = queue_number
+
     @property
     def queue(self) -> Iterable['Patient']:
         return iter(self.__queue)
@@ -62,6 +66,7 @@ class WaitingRoom:
         self.__current_queue += 1
         patient.set_queue_number(self.__current_queue)
         self.__queue.append(patient)
+        self.__next_queue_number += 1
 
     def __repr__(self) -> str:
         return (
