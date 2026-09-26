@@ -52,16 +52,6 @@ class WaitingRoom:
             f'status={self.__status}>'
         )
 
-
-# Example / testing
-if __name__ == "__main__":
-    waiting_room1 = WaitingRoom(20, 5, "Occupied")
-
-    print(waiting_room1)
-    print("Waiting Time:", waiting_room1.waiting_time, "minutes")
-    print("Number of People:", waiting_room1.number_of_people)
-    print("Status:", waiting_room1.status)
-
 class Doctor:
     def __init__(self, doctor_id: int, doctor_name: str, clinic_id: int, waiting_room = WaitingRoom):
         self.__id: int = doctor_id
@@ -116,3 +106,14 @@ class Patient:
         if not isinstance(other, Patient):
             return False
         return other.patient_id == self.patient_id
+
+    def queue_number(self) -> int:
+        return self.__queue_number
+
+    @queue_number.setter
+    def queue_number(self, queue_number: int):
+        self.__queue_number = queue_number
+
+    def __repr__(self) -> str:
+        return f'<Patient {self.__patient_name} Queue #{self.__queue_number}>'
+
