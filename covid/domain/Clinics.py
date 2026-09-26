@@ -66,16 +66,6 @@ class WaitingRoom:
             f'status={self.__status}>'
         )
 
-
-# Example / testing
-if __name__ == "__main__":
-    waiting_room1 = WaitingRoom(20, 5, "Occupied")
-
-    print(waiting_room1)
-    print("Waiting Time:", waiting_room1.waiting_time, "minutes")
-    print("Number of People:", waiting_room1.number_of_people)
-    print("Status:", waiting_room1.status)
-
 class Doctor:
     def __init__(self, doctor_id: int, doctor_name: str, clinic_id: int, waiting_room = WaitingRoom):
         self.__id: int = doctor_id
