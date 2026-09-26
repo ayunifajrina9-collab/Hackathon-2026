@@ -1,12 +1,14 @@
 import csv
 from pathlib import Path
 
-from covid.domain.Clinics import Clinics, WaitingRoom, Doctor
+from covid.domain.domain import Clinics, WaitingRoom, Doctor
 
 class MemoryRepository:
     def __init__(self):
         self.__doctors = []
         self.__clinics_index = {}
+        self.__patients = []
+        self.__next_patient_id = 1
 
     def add_clinic(self, clinic):
         self.__clinics_index[clinic.clinic_id] = clinic
@@ -28,6 +30,23 @@ class MemoryRepository:
             if doctor.doctor_id == doctor_id:
                 return doctor
         return None
+
+    def add_patient(self, patient):
+        self.__patients.append(patient)
+
+    def get_patients(self):
+        return list(self.__patients)
+
+    def get_patient(self, patient_id):
+        for patient in self.__patients:
+            if patient.patient_id == patient_id:
+                return patient
+        return None
+
+    def get_next_patient_id(self):
+        patient_id = self.__next_patient_id
+        self.__next_patient_id += 1
+        return patient_id
 
 
 def read_csv_file(filename):
@@ -51,8 +70,6 @@ def load_clinics(base_path, repo):
 
         waiting_room = WaitingRoom(
             waiting_time=int(data_row[2]),
-            number_of_people=int(data_row[3]),
-            status=data_row[4]
         )
 
         clinic.add_waiting_room(waiting_room)
@@ -80,29 +97,3 @@ def load_doctors(base_path, repo):
 def populate(base_path, repo):
     load_clinics(base_path, repo)
     load_doctors(base_path, repo)
-
-
-if __name__ == "__main__":
-    repo = MemoryRepository()
-    base_path = Path(__file__).parent / "doctorclinic_data"
-
-    populate(base_path, repo)
-
-    print("=== Clinics loaded ===")
-    for clinic in repo.get_clinics():
-        print(clinic)
-        print("Waiting room:", clinic.waiting_room)
-
-    print("\n=== Doctors loaded ===")
-    for doctor in repo.get_doctors():
-        print(doctor)
-        print("Clinic ID:", doctor.clinic_id)
-        print("Waiting room:", doctor.waiting_room)
-
-    for doctor in repo.get_doctors():
-        clinic = repo.get_clinic(doctor.clinic_id)
-
-        print(
-            doctor.doctor_name,
-            doctor.waiting_room is clinic.waiting_room
-        )

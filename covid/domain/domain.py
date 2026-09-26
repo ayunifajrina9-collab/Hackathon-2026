@@ -1,5 +1,7 @@
 from typing import Iterable, List
 
+class ModelException(Exception):
+    pass
 
 class Clinics:
     def __init__(self, clinic_id: int, clinic_name: str):
@@ -31,10 +33,10 @@ class Clinics:
         return other.clinic_id == self.clinic_id
 
 class WaitingRoom:
-    def __init__(self, waiting_time: int, number_of_people: int, status: str):
+    def __init__(self, waiting_time: int):
         self.__waiting_time: int = waiting_time
-        self.__number_of_people: int = number_of_people
-        self.__status: str = status
+        self.__number_of_people: int = 0
+        #self.__status: str = status
         self.__current_queue: int = 0
         self.__queue: List['Patient'] = list()
         self.__next_queue_number: int =1
@@ -44,8 +46,8 @@ class WaitingRoom:
         return self.__waiting_time
 
     @property
-    def number_of_people(self) -> int:
-        return self.__number_of_people
+    def number_of_people(self):
+        return len(self.__queue)
 
     @property
     def status(self) -> str:
@@ -60,11 +62,10 @@ class WaitingRoom:
 
     @property
     def queue(self) -> Iterable['Patient']:
-        return iter(self.__queue)
+        return self.__queue
 
-    def assign_patient(self, patient: 'Patient'):
-        self.__current_queue += 1
-        patient.set_queue_number(self.__current_queue)
+    def assign_patient(self, patient):
+        patient.set_queue_number(self.__next_queue_number)
         self.__queue.append(patient)
         self.__next_queue_number += 1
 

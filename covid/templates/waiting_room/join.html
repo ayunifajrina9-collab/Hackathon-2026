@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>Join Queue</h1>
+
+<h2>{{ clinic.clinic_name }}</h2>
+
+<form method="POST">
+
+    {{ form.hidden_tag() }}
+
+    {{ form.patient_name.label }}
+    {{ form.patient_name() }}
+
+    {{ form.submit() }}
+
+</form>
+
+{% endblock %}

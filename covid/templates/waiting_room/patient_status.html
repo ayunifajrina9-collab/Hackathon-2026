@@ -1,0 +1,19 @@
+<p>
+    Your queue number:
+    <strong>#{{ patient.queue_number }}</strong>
+</p>
+
+<p>
+    Now serving:
+    <strong>#{{ waiting_room.current_queue }}</strong>
+</p>
+
+<p>
+    People waiting:
+    <strong>{{ waiting_room.number_of_people }}</strong>
+</p>
+
+<p>
+    Estimated waiting time:
+    <strong>{{ estimated_wait }} minutes</strong>
+</p>

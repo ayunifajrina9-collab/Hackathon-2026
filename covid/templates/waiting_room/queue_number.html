@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>You're in the queue!</h1>
+
+<h2>{{ clinic.clinic_name }}</h2>
+
+<p>Hello, {{ patient.patient_name }}!</p>
+
+<p>Your queue number is:</p>
+
+<h1>#{{ patient.queue_number }}</h1>
+
+<a class="button"
+   href="{{ url_for(
+       'waiting_room_bp.waiting_room',
+       clinic_id=clinic.clinic_id
+   ) }}">
+    View Waiting Room
+</a>
+
+{% endblock %}

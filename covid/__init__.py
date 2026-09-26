@@ -26,16 +26,20 @@ def create_app(test_config=None):
     # Build the application - these steps require an application context.
     with app.app_context():
         # Register blueprints.
+
+        from .clinic import clinic
+        app.register_blueprint(clinic.clinic_blueprint)
+
+        from .doctor import doctor
+        app.register_blueprint(doctor.doctor_blueprint)
+
+        from .waiting_room import waiting_room
+        app.register_blueprint(waiting_room.waiting_room_blueprint)
+
         from .home import home
         app.register_blueprint(home.home_blueprint)
 
-        from .news import news
-        app.register_blueprint(news.news_blueprint)
-
         from .authentication import authentication
         app.register_blueprint(authentication.authentication_blueprint)
-
-        from .utilities import utilities
-        app.register_blueprint(utilities.utilities_blueprint)
 
     return app
