@@ -29,11 +29,14 @@ class Clinics:
         if not isinstance(other, Clinics):
             return False
         return other.clinic_id == self.clinic_id
+
 class WaitingRoom:
     def __init__(self, waiting_time: int, number_of_people: int, status: str):
         self.__waiting_time: int = waiting_time
         self.__number_of_people: int = number_of_people
         self.__status: str = status
+        self.__current_queue: int = 0
+        self.__queue: List['Patient'] = list()
 
     @property
     def waiting_time(self) -> int:
@@ -48,14 +51,16 @@ class WaitingRoom:
         return self.__status
 
     @property
-    def queue(self):
+    def current_queue(self) -> int:
+        return self.__current_queue
+
+    @property
+    def queue(self) -> Iterable['Patient']:
         return iter(self.__queue)
 
     def assign_patient(self, patient: 'Patient'):
         self.__current_queue += 1
-
-        patient.get_queue_number(self.__current_queue)
-
+        patient.set_queue_number(self.__current_queue)
         self.__queue.append(patient)
 
     def __repr__(self) -> str:
@@ -67,7 +72,13 @@ class WaitingRoom:
         )
 
 class Doctor:
-    def __init__(self, doctor_id: int, doctor_name: str, clinic_id: int, waiting_room = WaitingRoom):
+    def __init__(
+            self,
+            doctor_id: int,
+            doctor_name: str,
+            clinic_id: int,
+            waiting_room: 'WaitingRoom' = None
+    ):
         self.__id: int = doctor_id
         self.__name: str = doctor_name
         self.__clinic_id: int = clinic_id
@@ -86,7 +97,7 @@ class Doctor:
         return self.__clinic_id
 
     @property
-    def waiting_room(self) -> WaitingRoom:
+    def waiting_room(self) -> 'WaitingRoom':
         return self.__waiting_room
 
     def set_waiting_room(self, waiting_room: 'WaitingRoom'):
@@ -104,6 +115,7 @@ class Patient:
     def __init__(self, patient_id: int, patient_name: str):
         self.__id: int = patient_id
         self.__name: str = patient_name
+        self.__queue_number: int = None
 
     @property
     def patient_id(self) -> int:
@@ -113,21 +125,21 @@ class Patient:
     def patient_name(self) -> str:
         return self.__name
 
-    def __repr__(self):
-        return f'<Patient {self.patient_id} {self.patient_name}>'
+    @property
+    def queue_number(self) -> int:
+        return self.__queue_number
+
+    def set_queue_number(self, queue_number: int):
+        self.__queue_number = queue_number
+
+    def __repr__(self) -> str:
+        return (
+            f'<Patient '
+            f'{self.__patient_name} '
+            f'Queue #{self.__queue_number}>'
+        )
 
     def __eq__(self, other):
         if not isinstance(other, Patient):
             return False
         return other.patient_id == self.patient_id
-
-    def queue_number(self) -> int:
-        return self.__queue_number
-
-    @queue_number.setter
-    def queue_number(self, queue_number: int):
-        self.__queue_number = queue_number
-
-    def __repr__(self) -> str:
-        return f'<Patient {self.__patient_name} Queue #{self.__queue_number}>'
-

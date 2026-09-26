@@ -1,8 +1,7 @@
 import csv
 from pathlib import Path
 
-from domain.Clinics import Clinics, WaitingRoom, Doctor
-
+from covid.domain.Clinics import Clinics, WaitingRoom, Doctor
 
 class MemoryRepository:
     def __init__(self):
@@ -37,31 +36,40 @@ def read_csv_file(filename):
 
 def load_clinics(base_path, repo):
     clinics_filename = str(base_path / "clinic" / "clinic.csv")
+
     for data_row in read_csv_file(clinics_filename):
         clinic = Clinics(
             clinic_id=int(data_row[0]),
             clinic_name=data_row[1]
         )
-        # Uncomment and adjust once you confirm your CSV's waiting-room columns:
-        # waiting_room = WaitingRoom(
-        #     waiting_time=int(data_row[2]),
-        #     number_of_people=int(data_row[3]),
-        #     status=data_row[4]
-        # )
-        # clinic.add_waiting_room(waiting_room)
+
+        waiting_room = WaitingRoom(
+            waiting_time=int(data_row[2]),
+            number_of_people=int(data_row[3]),
+            status=data_row[4]
+        )
+
+        clinic.add_waiting_room(waiting_room)
+
         repo.add_clinic(clinic)
 
 
 def load_doctors(base_path, repo):
     doctors_filename = str(base_path / "doctor" / "Book(doctor).csv")
+
     for data_row in read_csv_file(doctors_filename):
         doctor = Doctor(
             doctor_id=int(data_row[0]),
             doctor_name=data_row[1],
             clinic_id=int(data_row[2])
         )
-        repo.add_doctor(doctor)
 
+        clinic = repo.get_clinic(doctor.clinic_id)
+
+        if clinic is not None:
+            doctor.set_waiting_room(clinic.waiting_room)
+
+        repo.add_doctor(doctor)
 
 def populate(base_path, repo):
     load_clinics(base_path, repo)
