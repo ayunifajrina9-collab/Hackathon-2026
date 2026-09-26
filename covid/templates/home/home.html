@@ -2,22 +2,161 @@
 
 {% block content %}
 
-<h1>Hospital</h1>
+<style>
 
-<p>Please choose a clinic:</p>
+    .clinic-page {
+        min-height: 75vh;
+        padding: 50px 30px;
+        font-family: Arial, sans-serif;
+    }
 
-{% for clinic in clinics %}
+    .clinic-container {
+        max-width: 1000px;
+        margin: auto;
+    }
 
-    <div>
-        <a class="button"
-           href="{{ url_for(
-               'waiting_room_bp.waiting_room',
-               clinic_id=clinic.clinic_id
-           ) }}">
-            {{ clinic.clinic_name }}
-        </a>
+    .clinic-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .welcome-text {
+        font-size: 14px;
+        font-weight: bold;
+        color: #777;
+        letter-spacing: 2px;
+        margin-bottom: 8px;
+    }
+
+    .clinic-header h1 {
+        font-size: 36px;
+        color: #333;
+        margin: 0 0 12px 0;
+    }
+
+    .clinic-description {
+        color: #777;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    .clinic-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .clinic-card {
+        background: white;
+        padding: 35px 25px;
+        border-radius: 20px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+
+        text-align: center;
+        text-decoration: none;
+        color: #333;
+
+        transition: 0.2s;
+    }
+
+    .clinic-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+    }
+
+    .clinic-icon {
+        font-size: 50px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .clinic-card h2 {
+        margin: 10px 0 5px;
+        font-size: 22px;
+    }
+
+    .clinic-card p {
+        color: #777;
+        margin-bottom: 25px;
+    }
+
+    .clinic-button {
+        display: inline-block;
+        padding: 11px 24px;
+        background: #333;
+        color: white;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    @media (max-width: 700px) {
+
+        .clinic-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .clinic-page {
+            padding: 30px 15px;
+        }
+
+    }
+
+</style>
+
+
+<div class="clinic-page">
+
+    <div class="clinic-container">
+
+        <section class="clinic-header">
+
+            <p class="welcome-text">
+                WELCOME TO
+            </p>
+
+            <h1>Clinic Finder</h1>
+
+            <p class="clinic-description">
+                Find the healthcare service you need
+                and choose a clinic below.
+            </p>
+
+        </section>
+
+
+        <section class="clinics-section">
+
+            <div class="clinic-grid">
+
+                {% for clinic in clinics %}
+
+                    <a
+                        href="{{ url_for(
+                            'waiting_room_bp.waiting_room',
+                            clinic_id=clinic.clinic_id
+                        ) }}"
+                        class="clinic-card"
+                    >
+
+                        <h2>{{ clinic.clinic_name }}</h2>
+
+                        <p>Healthcare service</p>
+
+                        <span class="clinic-button">
+                            VIEW CLINIC
+                        </span>
+
+                    </a>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
     </div>
 
-{% endfor %}
+</div>
 
 {% endblock %}
