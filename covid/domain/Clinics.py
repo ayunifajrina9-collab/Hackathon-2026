@@ -29,23 +29,15 @@ class Clinics:
         if not isinstance(other, Clinics):
             return False
         return other.clinic_id == self.clinic_id
-
-
 class WaitingRoom:
     def __init__(self, waiting_time: int, number_of_people: int, status: str):
         self.__waiting_time: int = waiting_time
         self.__number_of_people: int = number_of_people
         self.__status: str = status
-        self.__current_queue: int = 0
-        self.__queue: List['Patient'] = list()
 
     @property
     def waiting_time(self) -> int:
         return self.__waiting_time
-
-    @property
-    def current_queue(self) -> int:
-        return self.__current_queue
 
     @property
     def number_of_people(self) -> int:
@@ -73,6 +65,8 @@ class WaitingRoom:
             f'number_of_people={self.__number_of_people} '
             f'status={self.__status}>'
         )
+
+
 # Example / testing
 if __name__ == "__main__":
     waiting_room1 = WaitingRoom(20, 5, "Occupied")
@@ -136,3 +130,14 @@ class Patient:
         if not isinstance(other, Patient):
             return False
         return other.patient_id == self.patient_id
+
+    def queue_number(self) -> int:
+        return self.__queue_number
+
+    @queue_number.setter
+    def queue_number(self, queue_number: int):
+        self.__queue_number = queue_number
+
+    def __repr__(self) -> str:
+        return f'<Patient {self.__patient_name} Queue #{self.__queue_number}>'
+
