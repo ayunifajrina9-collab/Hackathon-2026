@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Find a Clinic</h1>
+    <p>Choose a clinic type below to view waiting rooms and available doctors.</p>
+</div>
+
+<div class="clinic-cards-row">
+    {% for clinic in clinics %}
+    <a href="{{ url_for('clinics_bp.waiting_rooms', clinic_id=clinic.clinic_id) }}" class="clinic-card">
+        <div class="clinic-card-icon">
+            {% if clinic.clinic_name == 'Physiotherapy' %}
+                <span class="material-icons">accessibility_new</span>
+            {% elif clinic.clinic_name == 'GP' %}
+                <span class="material-icons">medical_services</span>
+            {% elif clinic.clinic_name == 'Dermatology' %}
+                <span class="material-icons">face</span>
+            {% elif clinic.clinic_name == 'Dental' %}
+                <span class="material-icons">sentiment_satisfied</span>
+            {% endif %}
+        </div>
+        <h3>{{ clinic.clinic_name }}</h3>
+        <p>Click to view waiting rooms and doctors.</p>
+        <span class="more-link">MORE</span>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}

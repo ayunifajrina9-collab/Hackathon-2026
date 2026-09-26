@@ -1,47 +1,558 @@
 <!DOCTYPE html>
-
 <html lang="en">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>The COVID Pandemic of 2020</title>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clinic Finder</title>
 
     <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/main.css') }}"
-    />
-	
-	<link
-      rel="bookmark"
-	  type="image/x-icon"
-      href="favicon.ico"
-    />
-	
-	<link
-      rel="icon"
-      href="favicon.ico"
-    />
-  </head>
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/main.css') }}"
+    >
 
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link
+        rel="icon"
+        href="{{ url_for('static', filename='favicon.ico') }}"
+    >
 
-  <body>
-    <div id="body">
-      <!-- Include navigation partial. -->
-      {% include 'navigation.html' %}
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    >
 
-      <div id="content-2">
-        <!-- Include header partial. -->
-        {% include 'header.html' %}
+    <style>
 
-        <div id="container">
-          <!-- Main content block to be supplied by page. -->
-          {% block content %} {% endblock %}
+        /* ---------- Main Page ---------- */
 
-          <!-- Include sidebar partial. -->
-          {% include 'sidebar.html' %}
+        .clinic-page {
+            min-height: 75vh;
+            padding: 50px 30px;
+            font-family: Arial, sans-serif;
+        }
+
+        .clinic-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+
+        /* ---------- Heading ---------- */
+
+        .clinic-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .welcome-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #777;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .clinic-header h1 {
+            font-size: 36px;
+            color: #333;
+            margin: 0 0 12px 0;
+        }
+
+        .clinic-description {
+            color: #777;
+            font-size: 16px;
+            margin: 0;
+        }
+
+
+        /* ---------- Clinic Cards ---------- */
+
+        .clinic-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .clinic-card {
+            background: white;
+            padding: 35px 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+
+            transition: 0.2s;
+        }
+
+        .clinic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+        }
+
+        .clinic-icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .clinic-card h2 {
+            margin: 10px 0 5px;
+            font-size: 22px;
+        }
+
+        .clinic-card p {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .clinic-button {
+            display: inline-block;
+            padding: 11px 24px;
+            background: #333;
+            color: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+
+        /* ---------- Waiting Room ---------- */
+
+        .waiting-room {
+            background: white;
+            max-width: 850px;
+            margin: 50px auto;
+            padding: 40px;
+
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.10);
+
+            text-align: center;
+        }
+
+        .waiting-room h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .waiting-room > p {
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+
+        /* ---------- Waiting Room Table ---------- */
+
+        .waiting-times-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .waiting-times-table th {
+            background: #f5f5f5;
+            color: #333;
+            padding: 15px;
+        }
+
+        .waiting-times-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eeeeee;
+            color: #555;
+        }
+
+        .waiting-times-table tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        /* ---------- Back Button ---------- */
+
+        .back-button {
+            border: none;
+            display: inline-block;
+            padding: 12px 30px;
+
+            background: #333;
+            color: white;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .back-button:hover {
+            background: #555;
+            transform: translateY(-2px);
+        }
+
+
+        /* ---------- Mobile ---------- */
+
+        @media (max-width: 700px) {
+
+            .clinic-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .clinic-page {
+                padding: 30px 15px;
+            }
+
+            .waiting-room {
+                padding: 25px 15px;
+            }
+
+            .waiting-times-table {
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div id="body">
+
+    <!-- Navigation -->
+
+
+
+    <main id="content-2" class="clinic-page">
+
+
+        <!-- ===================== -->
+        <!-- CLINIC FINDER -->
+        <!-- ===================== -->
+
+        <div class="clinic-container">
+
+            <section class="clinic-header">
+
+                <p class="welcome-text">
+                    WELCOME TO
+                </p>
+
+                <h1>Clinic Finder</h1>
+
+                <p class="clinic-description">
+                    Find the healthcare service you need
+                    and choose a clinic below.
+                </p>
+
+            </section>
+
+
+            <section class="clinics-section">
+
+                <div class="clinic-grid">
+
+
+                    <!-- Clinic 1 -->
+
+                    <a
+                        href="#waiting-room"
+                        class="clinic-card"
+                        onclick="showWaitingRoom(1); return false;"
+                    >
+
+                        <span class="material-icons clinic-icon">
+                            accessibility
+                        </span>
+
+                        <h2>Clinic 1</h2>
+
+                        <p>Physiotherapy</p>
+
+                        <span class="clinic-button">
+                            VIEW CLINIC
+                        </span>
+
+                    </a>
+
+
+                    <!-- Clinic 2 -->
+
+                    <a
+                        href="#waiting-room"
+                        class="clinic-card"
+                        onclick="showWaitingRoom(2); return false;"
+                    >
+
+                        <span class="material-icons clinic-icon">
+                            medical_services
+                        </span>
+
+                        <h2>Clinic 2</h2>
+
+                        <p>General Practice (GP)</p>
+
+                        <span class="clinic-button">
+                            VIEW CLINIC
+                        </span>
+
+                    </a>
+
+
+                    <!-- Clinic 3 -->
+
+                    <a
+                        href="#waiting-room"
+                        class="clinic-card"
+                        onclick="showWaitingRoom(3); return false;"
+                    >
+
+                        <span class="material-icons clinic-icon">
+                            face
+                        </span>
+
+                        <h2>Clinic 3</h2>
+
+                        <p>Dermatology</p>
+
+                        <span class="clinic-button">
+                            VIEW CLINIC
+                        </span>
+
+                    </a>
+
+
+                    <!-- Clinic 4 -->
+
+                    <a
+                        href="#waiting-room"
+                        class="clinic-card"
+                        onclick="showWaitingRoom(4); return false;"
+                    >
+
+                        <span class="material-icons clinic-icon">
+                            dentistry
+                        </span>
+
+                        <h2>Clinic 4</h2>
+
+                        <p>Dental</p>
+
+                        <span class="clinic-button">
+                            VIEW CLINIC
+                        </span>
+
+                    </a>
+
+                </div>
+
+            </section>
+
         </div>
-        
-      </div>
-    </div>
-  </body>
+
+
+        <!-- ===================== -->
+        <!-- WAITING ROOM -->
+        <!-- ===================== -->
+
+        <div
+            class="waiting-room"
+            id="waiting-room"
+            style="display: none;"
+        >
+
+            <h2 id="waiting-title">
+                Waiting Room
+            </h2>
+
+            <p>
+                Current room availability and estimated waiting times.
+            </p>
+
+
+            <table class="waiting-times-table">
+
+                <thead>
+
+                    <tr>
+                        <th>Room</th>
+                        <th>Doctor</th>
+                        <th>Status</th>
+                        <th>Estimated Wait</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="waiting-data">
+
+                    <!-- JavaScript inserts data here -->
+
+                </tbody>
+
+            </table>
+
+
+            <button
+                type="button"
+                class="back-button"
+                onclick="showClinics()"
+            >
+                ← Back to Clinics
+            </button>
+
+        </div>
+
+
+
+
+    </main>
+
+</div>
+
+
+<!-- ===================== -->
+<!-- DUMMY CLINIC DATA -->
+<!-- ===================== -->
+
+<script>
+
+    const clinics = {
+
+        1: {
+            name: "Physiotherapy",
+
+            rooms: [
+                {
+                    room: 1,
+                    doctor: "Dr John",
+                    status: "Available",
+                    wait: 0
+                },
+
+            ]
+        },
+
+
+        2: {
+            name: "General Practice (GP)",
+
+            rooms: [
+                {
+                    room: 2,
+                    doctor: "Dr Alex",
+                    status: "Busy",
+                    wait: 20
+                }
+            ]
+        },
+
+
+        3: {
+            name: "Dermatology",
+
+            rooms: [
+                {
+                    room: 3,
+                    doctor: "Dr Amni",
+                    status: "Available",
+                    wait: 0
+                }
+            ]
+        },
+
+
+        4: {
+            name: "Dental",
+
+            rooms: [
+                {
+                    room: 4,
+                    doctor: "Dr Ayuni",
+                    status: "Busy",
+                    wait: 10
+                }
+            ]
+        }
+
+    };
+
+
+    /* Display selected clinic */
+
+    function showWaitingRoom(clinicId) {
+
+        const clinic = clinics[clinicId];
+
+        if (!clinic) {
+            return;
+        }
+
+
+        document.querySelector(".clinic-container").style.display = "none";
+
+        document.getElementById("waiting-room").style.display = "block";
+
+
+        document.getElementById("waiting-title").textContent =
+            clinic.name + " - Waiting Room";
+
+
+        const table = document.getElementById("waiting-data");
+
+        table.innerHTML = "";
+
+
+        clinic.rooms.forEach(room => {
+
+            const row = document.createElement("tr");
+
+
+            [
+                room.room,
+                room.doctor,
+                room.status,
+                room.wait + " min"
+            ].forEach(value => {
+
+                const cell = document.createElement("td");
+
+                cell.textContent = value;
+
+                row.appendChild(cell);
+
+            });
+
+
+            table.appendChild(row);
+
+        });
+
+    }
+
+
+    /* Return to clinic list */
+
+    function showClinics() {
+
+        document.querySelector(".clinic-container").style.display = "block";
+
+        document.getElementById("waiting-room").style.display = "none";
+
+    }
+
+</script>
+
+
+</body>
+
 </html>

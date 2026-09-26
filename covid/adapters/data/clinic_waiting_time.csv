@@ -1,0 +1,5 @@
+clinic_id,clinic_name,waiting_time_minutes
+1,Physiotherapy,45
+2,GP,30
+3,Dermatology,50
+4,Dental ,60
